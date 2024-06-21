@@ -31,39 +31,36 @@ class HomeView extends GetView<HomeController> {
       body: GridView(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         physics: const BouncingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             childAspectRatio: 1),
-        children: [
-          ContactsCard(
-              name: "wafa",
-              onTap: () {
-                Get.toNamed(Routes.CONTACT_DETAIL);
-              }),
-          ContactsCard(
-              name: "wafa",
-              onTap: () {
-                Get.toNamed(Routes.CONTACT_DETAIL);
-              }),
-        ],
+        children: controller.contactList
+            .map((contact) => ContactCard(
+                name: "${contact.firstName} ${contact.lastName}",
+                onTap: () async {
+                  var result = await Get.toNamed(Routes.CONTACT_DETAIL,
+                      arguments: {"CONTACT_MODEL", contact});
+                }))
+            .toList(),
       ),
     );
   }
 }
 
-class ContactsCard extends StatelessWidget {
+class ContactCard extends StatelessWidget {
   final String name;
   final Function() onTap;
 
-  const ContactsCard({required this.name, required this.onTap, super.key});
+  const ContactCard({required this.name, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
             border: Border.all(width: 1, color: AppColor.neutral200)),
         child: Center(
@@ -83,6 +80,7 @@ class ContactsCard extends StatelessWidget {
                 name,
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
               )
             ],
           ),

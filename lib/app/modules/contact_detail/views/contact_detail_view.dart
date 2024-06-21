@@ -20,7 +20,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
         ],
         centerTitle: true,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -113,6 +113,7 @@ class ContactInputField extends StatelessWidget {
                 Flexible(
                   flex: 3,
                   child: TextFormField(
+                    textInputAction: TextInputAction.next,
                       initialValue: initialValue,
                       validator: (value) {
                         if (value == null || value.isEmpty) {

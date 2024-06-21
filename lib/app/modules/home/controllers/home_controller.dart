@@ -1,12 +1,18 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class HomeController extends GetxController {
-  //TODO: Implement HomeController
+import '../../../data/contact_model.dart';
 
-  final count = 0.obs;
+class HomeController extends GetxController {
+  final contactList = <ContactModel>[].obs;
+
   @override
   void onInit() {
     super.onInit();
+    loadData();
   }
 
   @override
@@ -16,5 +22,16 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
-  void increment() => count.value++;
+
+  Future<void> loadData() async {
+    String data = await rootBundle.loadString("assets/data.json");
+    // Get.log("data: ${data}");
+    final jsonResult = jsonDecode(data);
+    // Get.log("json result: ${jsonResult}");
+    final List<ContactModel> resultList = jsonResult
+        .map<ContactModel>((item) => ContactModel.fromJson(item))
+        .toList();
+    contactList.assignAll(resultList);
+    Get.log("contact list length: ${resultList.length}");
+  }
 }
