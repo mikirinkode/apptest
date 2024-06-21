@@ -12,7 +12,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadData();
+    _loadData();
   }
 
   @override
@@ -23,15 +23,22 @@ class HomeController extends GetxController {
   @override
   void onClose() {}
 
-  Future<void> loadData() async {
+  Future<void> _loadData() async {
     String data = await rootBundle.loadString("assets/data.json");
-    // Get.log("data: ${data}");
     final jsonResult = jsonDecode(data);
-    // Get.log("json result: ${jsonResult}");
     final List<ContactModel> resultList = jsonResult
         .map<ContactModel>((item) => ContactModel.fromJson(item))
         .toList();
     contactList.assignAll(resultList);
     Get.log("contact list length: ${resultList.length}");
+  }
+
+  void updateData(ContactModel? result, int index) {
+    Get.log("Data from detail received: ${result?.firstName}, ${result?.lastName}, ${result?.email}, ${result?.dob}");
+    final oldData = contactList.firstWhere((element) => element.id == result?.id);
+    if (oldData != null && result != null){
+      var index = contactList.indexOf(oldData);
+      contactList[index] = result;
+    }
   }
 }

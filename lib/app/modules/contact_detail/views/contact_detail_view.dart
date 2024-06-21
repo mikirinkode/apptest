@@ -8,11 +8,15 @@ import '../controllers/contact_detail_controller.dart';
 class ContactDetailView extends GetView<ContactDetailController> {
   @override
   Widget build(BuildContext context) {
+    controller.contactFormKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         actions: [
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                controller.saveData();
+              },
               child: Text(
                 "Save",
                 style: TextStyle(color: AppColor.primary),
@@ -21,30 +25,51 @@ class ContactDetailView extends GetView<ContactDetailController> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Container(
-                width: 86,
-                height: 86,
-                decoration: const BoxDecoration(
-                    color: AppColor.primary, shape: BoxShape.circle),
-              ),
+        child: Obx(
+          () => Form(
+            key: controller.contactFormKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Container(
+                    width: 86,
+                    height: 86,
+                    decoration: const BoxDecoration(
+                        color: AppColor.primary, shape: BoxShape.circle),
+                  ),
+                ),
+                ContactDetailSection(title: "Main Information", body: [
+                  ContactInputField(
+                      title: "First Name",
+                      initialValue: controller.firstNameInput,
+                      onChanged: (value) {
+                        controller.onFirstNameChanged(value ?? "");
+                      }),
+                  ContactInputField(
+                      title: "Last Name",
+                      initialValue: controller.lastNameInput,
+                      onChanged: (value) {
+                        controller.onLastNameChanged(value ?? "");
+                      }),
+                ]),
+                ContactDetailSection(title: "Sub Information", body: [
+                  ContactInputField(
+                      title: "Email",
+                      initialValue: controller.emailInput,
+                      onChanged: (value) {
+                        controller.onEmailNameChanged(value ?? "");
+                      }),
+                  ContactDateInput(
+                      title: "DOB",
+                      initialValue: controller.dobInput,
+                      onShowDatePicker: () async {
+                        await controller.showDatePickerAppliedDate(context);
+                      })
+                ]),
+              ],
             ),
-            ContactDetailSection(title: "Main Information", body: [
-              ContactInputField(
-                  title: "First Name", initialValue: "", onSaved: (value) {}),
-              ContactInputField(
-                  title: "Last Name", initialValue: "", onSaved: (value) {}),
-            ]),
-            ContactDetailSection(title: "Sub Information", body: [
-              ContactInputField(
-                  title: "Email", initialValue: "", onSaved: (value) {}),
-              ContactDateInput(
-                  title: "DOB", initialValue: "", onSaved: (value) {})
-            ]),
-          ],
+          ),
         ),
       ),
     );
@@ -82,12 +107,12 @@ class ContactDetailSection extends StatelessWidget {
 class ContactInputField extends StatelessWidget {
   final String title;
   final String initialValue;
-  final Function(String?) onSaved;
+  final Function(String?) onChanged;
 
   const ContactInputField(
       {required this.title,
       required this.initialValue,
-      required this.onSaved,
+      required this.onChanged,
       super.key});
 
   @override
@@ -113,15 +138,15 @@ class ContactInputField extends StatelessWidget {
                 Flexible(
                   flex: 3,
                   child: TextFormField(
-                    textInputAction: TextInputAction.next,
+                      textInputAction: TextInputAction.next,
                       initialValue: initialValue,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Name cannot be blank";
+                          return "field cannot be blank";
                         }
                         return null;
                       },
-                      onSaved: onSaved),
+                      onChanged: onChanged),
                 ),
               ],
             ),
@@ -143,12 +168,12 @@ class ContactInputField extends StatelessWidget {
 class ContactDateInput extends StatelessWidget {
   final String title;
   final String initialValue;
-  final Function(String?) onSaved;
+  final Function() onShowDatePicker;
 
   const ContactDateInput(
       {required this.title,
       required this.initialValue,
-      required this.onSaved,
+      required this.onShowDatePicker,
       super.key});
 
   @override
@@ -181,7 +206,7 @@ class ContactDateInput extends StatelessWidget {
                       children: [
                         Expanded(child: Text(initialValue)),
                         IconButton(
-                            onPressed: () {}, icon: Icon(Icons.date_range))
+                            onPressed: onShowDatePicker, icon: Icon(Icons.date_range))
                       ],
                     ),
                   ),
