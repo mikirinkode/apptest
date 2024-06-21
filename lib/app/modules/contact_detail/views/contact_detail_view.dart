@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 
 import '../../../../core/theme/app_color.dart';
 import '../controllers/contact_detail_controller.dart';
+import '../widgets/contact_date_input.dart';
+import '../widgets/contact_detail_section.dart';
+import '../widgets/contact_input_field.dart';
 
 class ContactDetailView extends GetView<ContactDetailController> {
   @override
   Widget build(BuildContext context) {
     controller.contactFormKey = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -43,12 +45,14 @@ class ContactDetailView extends GetView<ContactDetailController> {
                   ContactInputField(
                       title: "First Name",
                       initialValue: controller.firstNameInput,
+                      isRequired: true,
                       onChanged: (value) {
                         controller.onFirstNameChanged(value ?? "");
                       }),
                   ContactInputField(
                       title: "Last Name",
                       initialValue: controller.lastNameInput,
+                      isRequired: true,
                       onChanged: (value) {
                         controller.onLastNameChanged(value ?? "");
                       }),
@@ -57,6 +61,7 @@ class ContactDetailView extends GetView<ContactDetailController> {
                   ContactInputField(
                       title: "Email",
                       initialValue: controller.emailInput,
+                      isRequired: false,
                       onChanged: (value) {
                         controller.onEmailNameChanged(value ?? "");
                       }),
@@ -71,158 +76,6 @@ class ContactDetailView extends GetView<ContactDetailController> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ContactDetailSection extends StatelessWidget {
-  final String title;
-  final List<Widget> body;
-
-  const ContactDetailSection(
-      {required this.title, required this.body, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          width: double.infinity,
-          decoration: BoxDecoration(color: AppColor.neutral100),
-          child: Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-        ),
-        Column(
-          children: body,
-        )
-      ],
-    );
-  }
-}
-
-class ContactInputField extends StatelessWidget {
-  final String title;
-  final String initialValue;
-  final Function(String?) onChanged;
-
-  const ContactInputField(
-      {required this.title,
-      required this.initialValue,
-      required this.onChanged,
-      super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16, right: 16),
-            child: Row(
-              children: [
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Text(title,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: TextFormField(
-                      textInputAction: TextInputAction.next,
-                      initialValue: initialValue,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "field cannot be blank";
-                        }
-                        return null;
-                      },
-                      onChanged: onChanged),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Container(
-            width: double.infinity,
-            height: 1,
-            color: AppColor.neutral200,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class ContactDateInput extends StatelessWidget {
-  final String title;
-  final String initialValue;
-  final Function() onShowDatePicker;
-
-  const ContactDateInput(
-      {required this.title,
-      required this.initialValue,
-      required this.onShowDatePicker,
-      super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16, right: 16),
-            child: Row(
-              children: [
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Text(title,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: AppColor.neutral200)),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(initialValue)),
-                        IconButton(
-                            onPressed: onShowDatePicker, icon: Icon(Icons.date_range))
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Container(
-            width: double.infinity,
-            height: 1,
-            color: AppColor.neutral200,
-          )
-        ],
       ),
     );
   }

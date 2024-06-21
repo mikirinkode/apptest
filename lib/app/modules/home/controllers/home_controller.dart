@@ -12,7 +12,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadData();
+    loadData();
   }
 
   @override
@@ -23,12 +23,14 @@ class HomeController extends GetxController {
   @override
   void onClose() {}
 
-  Future<void> _loadData() async {
+
+  Future<void> loadData() async {
     String data = await rootBundle.loadString("assets/data.json");
     final jsonResult = jsonDecode(data);
     final List<ContactModel> resultList = jsonResult
         .map<ContactModel>((item) => ContactModel.fromJson(item))
         .toList();
+    contactList.clear();
     contactList.assignAll(resultList);
     Get.log("contact list length: ${resultList.length}");
   }
